@@ -1,0 +1,396 @@
+/* home.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter', sans-serif;
+}
+
+body{
+  background:#07111f;
+}
+
+/* MAIN */
+
+.home{
+  min-height:100vh;
+
+  background:
+  radial-gradient(circle at top left,
+  #0f1f3a,
+  #07111f 60%);
+
+  color:white;
+}
+
+/* NAVBAR */
+
+.navbar{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:22px 80px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo-circle{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+
+  background:linear-gradient(
+    135deg,
+    #00aaff,
+    #7b2cff
+  );
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  font-size:18px;
+  font-weight:bold;
+}
+
+.logo h2{
+  font-size:28px;
+  font-weight:700;
+}
+
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.signin-btn{
+  background:transparent;
+  border:none;
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+}
+
+.signup-btn{
+  background:linear-gradient(
+    135deg,
+    #00aaff,
+    #7b2cff
+  );
+
+  border:none;
+  color:white;
+
+  padding:12px 24px;
+
+  border-radius:10px;
+
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* HERO */
+
+.hero{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:80px;
+
+  gap:60px;
+
+  min-height:85vh;
+}
+
+/* LEFT */
+
+.hero-left{
+  flex:1;
+}
+
+.hero-left h1{
+  font-size:82px;
+  line-height:1;
+  font-weight:800;
+  margin-bottom:30px;
+}
+
+.hero-left span{
+  color:#28b8ff;
+}
+
+.hero-left p{
+  color:#cbd5e1;
+  font-size:20px;
+  line-height:1.8;
+  max-width:580px;
+  margin-bottom:40px;
+}
+
+/* BUTTONS */
+
+.hero-buttons{
+  display:flex;
+  gap:18px;
+}
+
+.get-btn{
+  background:linear-gradient(
+    135deg,
+    #00aaff,
+    #7b2cff
+  );
+
+  border:none;
+  color:white;
+
+  padding:16px 30px;
+
+  border-radius:12px;
+
+  font-size:16px;
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:0.3s;
+}
+
+.get-btn:hover{
+  transform:translateY(-3px);
+}
+
+.hero-signin{
+  background:#111c2d;
+
+  border:none;
+
+  color:white;
+
+  padding:16px 30px;
+
+  border-radius:12px;
+
+  font-size:16px;
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:0.3s;
+}
+
+.hero-signin:hover{
+  background:#1a2740;
+}
+
+/* RIGHT */
+
+.hero-right{
+  flex:1;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.home-image{
+  width:520px;
+  max-width:100%;
+
+  border-radius:40px;
+
+  box-shadow:
+  0 20px 50px rgba(0,0,0,0.4);
+
+  transition:0.3s;
+}
+
+.home-image:hover{
+  transform:scale(1.02);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:950px){
+
+  .hero{
+    flex-direction:column;
+    text-align:center;
+    padding:60px 30px;
+  }
+
+  .hero-left h1{
+    font-size:58px;
+  }
+
+  .hero-left p{
+    margin:auto;
+    margin-bottom:35px;
+  }
+
+  .hero-buttons{
+    justify-content:center;
+  }
+
+  .navbar{
+    padding:20px 30px;
+  }
+
+  .home-image{
+    width:350px;
+  }
+}/* WORKS SECTION */
+
+.works-section{
+  padding:100px 80px;
+  text-align:center;
+}
+
+.works-section h2{
+  font-size:48px;
+  margin-bottom:18px;
+  color:white;
+}
+
+.works-section h2 span{
+  color:#28b8ff;
+}
+
+.works-subtitle{
+  color:#cbd5e1;
+  font-size:18px;
+  margin-bottom:60px;
+  line-height:1.7;
+}
+
+/* CARDS */
+
+.works-cards{
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  flex-wrap:wrap;
+}
+
+.work-card{
+  width:320px;
+
+  background:#111c2d;
+
+  padding:35px;
+
+  border-radius:24px;
+
+  text-align:left;
+
+  border:1px solid rgba(255,255,255,0.06);
+
+  transition:0.3s;
+}
+
+.work-card:hover{
+  transform:translateY(-6px);
+}
+
+.icon{
+  width:60px;
+  height:60px;
+
+  border-radius:18px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  font-size:28px;
+
+  margin-bottom:25px;
+}
+
+.blue{
+  background:rgba(0,170,255,0.15);
+  color:#28b8ff;
+}
+
+.purple{
+  background:rgba(139,92,246,0.15);
+  color:#a855f7;
+}
+
+.pink{
+  background:rgba(236,72,153,0.15);
+  color:#ec4899;
+}
+
+.work-card h3{
+  color:white;
+  margin-bottom:18px;
+  font-size:24px;
+}
+
+.work-card p{
+  color:#9ca3af;
+  line-height:1.8;
+  margin-bottom:25px;
+}
+
+.work-card span{
+  color:#28b8ff;
+  font-weight:600;
+  cursor:pointer;
+}
+/* smoother global feel */
+body {
+  background: #07111f;
+  overflow-x: hidden;
+}
+
+/* navbar upgrade */
+.navbar {
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(12px);
+  background: rgba(7, 17, 31, 0.7);
+  z-index: 100;
+}
+
+/* logo upgrade */
+.logo-circle {
+  box-shadow: 0 0 20px rgba(0,170,255,0.5);
+}
+
+/* hero text improvement */
+.hero-left h1 {
+  font-size: 78px;
+  letter-spacing: -1px;
+}
+
+/* softer buttons */
+.get-btn,
+.hero-signin {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* cards glow effect */
+.work-card {
+  backdrop-filter: blur(10px);
+  background: rgba(17, 28, 45, 0.7);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+/* hover glow */
+.work-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0,170,255,0.15);
+}

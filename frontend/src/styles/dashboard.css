@@ -1,0 +1,138 @@
+/* MAIN LAYOUT */
+
+.works-section {
+  padding: 80px 0;
+  text-align: center;
+}
+
+.works-cards {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 30px;
+
+  flex-wrap: nowrap;   /* forces single line */
+  overflow-x: auto;    /* scroll if screen is small */
+  padding-bottom: 10px;
+}
+
+/* keep all cards same size */
+.work-card {
+  min-width: 300px;
+  flex: 0 0 auto;
+}
+
+.work-card {
+  min-width: 280px;
+  background: rgba(17, 28, 45, 0.7);
+  padding: 30px;
+  border-radius: 20px;
+  text-align: left;
+  transition: 0.3s;
+  
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, #0f1f3a, #07111f 60%);
+  color: white;
+}
+
+/* SIDEBAR FIX */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+/* MAIN CONTENT FIX */
+.dashboard-main {
+  flex: 1;
+  padding: 60px;
+  min-width: 0; /* prevents overflow shifting */
+  overflow-x: hidden;
+}
+
+/* HERO */
+.dashboard-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 60px;
+  margin-bottom: 80px;
+}
+
+/* LEFT */
+.hero-left h1 {
+  font-size: 64px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.hero-left span {
+  color: #28b8ff;
+}
+
+.hero-left p {
+  color: #cbd5e1;
+  font-size: 18px;
+  line-height: 1.7;
+  max-width: 500px;
+  margin-bottom: 30px;
+}
+
+/* BUTTON */
+.get-started-btn {
+  background: linear-gradient(135deg, #00aaff, #7b2cff);
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.get-started-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* RIGHT IMAGE */
+.dashboard-image {
+  width: 450px;
+  max-width: 100%;
+  border-radius: 30px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  transition: 0.3s;
+}
+
+.dashboard-image:hover {
+  transform: scale(1.03);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .dashboard-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-left h1 {
+    font-size: 48px;
+  }
+
+  .dashboard-image {
+    width: 320px;
+  }
+}
+.top-section {
+  margin-bottom: 60px;
+}
+
+/* optional: make top section more compact */
+.top-section .works-cards {
+  gap: 20px;
+}
