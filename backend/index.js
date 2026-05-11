@@ -3,19 +3,12 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const User = require("./models/User");
-
 const app = express();
-
-// MIDDLEWARE
 app.use(cors());
 app.use(express.json());
-
-// DB CONNECTION
-mongoose.connect("mongodb://localhost:27017/skillsync")
+mongoose.connect("mongodb://modiyamdeepika:deepika1234@ac-qqqsn4k-shard-00-00.vpj6amn.mongodb.net:27017,ac-qqqsn4k-shard-00-01.vpj6amn.mongodb.net:27017,ac-qqqsn4k-shard-00-02.vpj6amn.mongodb.net:27017/?ssl=true&replicaSet=atlas-cct1q6-shard-0&authSource=admin&appName=Cluster0")
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
-
-// TEST ROUTE
 app.get("/", (req, res) => {
   res.json({ message: "Backend running" });
 });
