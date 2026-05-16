@@ -74,7 +74,49 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+app.put("/update-profile", async (req, res) => {
 
+  try {
+
+    const {
+      email,
+      about,
+      profilePic,
+      teachSkills,
+      learnSkills,
+    } = req.body;
+
+    const updatedUser =
+      await User.findOneAndUpdate(
+        { email },
+
+        {
+          about,
+          profilePic,
+          teachSkills,
+          learnSkills,
+        },
+
+        { new: true }
+      );
+
+    res.json({
+      message:
+        "Profile updated",
+
+      user: updatedUser,
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      message:
+        "Server error",
+    });
+
+  }
+
+});
 
 // SERVER START
 app.listen(5000, () => {

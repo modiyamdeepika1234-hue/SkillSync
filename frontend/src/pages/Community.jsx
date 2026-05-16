@@ -1,146 +1,49 @@
-import React, { useState } from "react";
-import "../styles/community.css";
-import Sidebar from "../components/Sidebar";
+import { useEffect, useState } from 'react';
+import api from '../api/client';
+import { Heart } from 'lucide-react';
+import toast from 'react-hot-toast';
 
-function Community() {
-  const [post, setPost] = useState("");
-  const [posts, setPosts] = useState([]);
-  const [comments, setComments] = useState({});
+export default function Community() {
+  const [posts, setPosts]   = useState([]);
+  const [text, setText]     = useState('');
 
-  const createPost = () => {
-    if (!post.trim()) return;
+  const load = () => api.get('/posts').then((r)=>setPosts(r.data));
+  useEffect(() => { load(); }, []);
 
-    const newPost = {
-      id: Date.now(),
-      user: "Charitha",
-      text: post,
-      likes: 0,
-      comments: [],
-    };
-
-    setPosts([newPost, ...posts]);
-    setPost("");
+  const create = async (e) => {
+    e.preventDefault(); if (!text.trim()) return;
+    try { await api.post('/posts', { content: text }); setText(''); load(); }
+    catch { toast.error('Could not post'); }
   };
 
-  const likePost = (id) => {
-    const updatedPosts = posts.map((item) =>
-      item.id === id ? { ...item, likes: item.likes + 1 } : item
-    );
-    setPosts(updatedPosts);
-  };
-
-  const addComment = (id) => {
-    const text = comments[id];
-    if (!text?.trim()) return;
-
-    const updatedPosts = posts.map((item) =>
-      item.id === id
-        ? { ...item, comments: [...item.comments, text] }
-        : item
-    );
-
-    setPosts(updatedPosts);
-
-    setComments({
-      ...comments,
-      [id]: "",
-    });
-  };
+  const like = async (id) => { await api.post(`/posts/${id}/like`); load(); };
 
   return (
-    <div className="community-layout">
-
-      {/* SIDEBAR */}
-      <Sidebar />
-
-      {/* MAIN CONTENT */}
-      <div className="community-container">
-
-        <h1>Community Hub</h1>
-
-        <p className="subtitle">
-          Share ideas and connect with others.
-        </p>
-
-        {/* CREATE POST */}
-        <div className="create-post">
-          <textarea
-            placeholder="Share your thoughts..."
-            value={post}
-            onChange={(e) => setPost(e.target.value)}
-          />
-
-          <button onClick={createPost}>
-            Create Post
-          </button>
-        </div>
-
-        {/* POSTS */}
-        <div className="posts">
-
-          {posts.map((item) => (
-            <div className="post-card" key={item.id}>
-
-              <div className="post-top">
-                <div className="avatar">
-                  {item.user[0]}
-                </div>
-
-                <div>
-                  <h3>{item.user}</h3>
-                  <small>Community Member</small>
-                </div>
+    <div className="max-w-2xl">
+      <h1 className="text-2xl font-bold">Community</h1>
+      <form onSubmit={create} className="card mt-4">
+        <textarea className="input" rows="3" placeholder="Share an idea, win, or question…"
+          value={text} onChange={(e)=>setText(e.target.value)}/>
+        <button className="btn-primary mt-3">Post</button>
+      </form>
+      <div className="mt-6 space-y-3">
+        {posts.map((p) => (
+          <div key={p._id} className="card">
+            <div className="flex items-center gap-3">
+              <img src={p.author.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${p.author.name}`}
+                   className="w-9 h-9 rounded-full bg-slate-200" alt=""/>
+              <div>
+                <p className="font-semibold text-sm">{p.author.name}</p>
+                <p className="text-xs text-ink-500">{new Date(p.createdAt).toLocaleString()}</p>
               </div>
-
-              <p className="post-text">{item.text}</p>
-
-              <button
-                className="like-btn"
-                onClick={() => likePost(item.id)}
-              >
-                ❤️ {item.likes}
-              </button>
-
-              {/* COMMENTS */}
-              <div className="comments">
-
-                {item.comments.map((comment, index) => (
-                  <div className="comment" key={index}>
-                    {comment}
-                  </div>
-                ))}
-
-                <div className="comment-box">
-
-                  <input
-                    type="text"
-                    placeholder="Add comment..."
-                    value={comments[item.id] || ""}
-                    onChange={(e) =>
-                      setComments({
-                        ...comments,
-                        [item.id]: e.target.value,
-                      })
-                    }
-                  />
-
-                  <button onClick={() => addComment(item.id)}>
-                    Comment
-                  </button>
-
-                </div>
-
-              </div>
-
             </div>
-          ))}
-
-        </div>
-
+            <p className="mt-3 whitespace-pre-wrap">{p.content}</p>
+            <button onClick={() => like(p._id)} className="mt-3 text-sm text-ink-500 hover:text-brand-600 flex items-center gap-1">
+              <Heart size={16}/> {p.likes.length}
+            </button>
+          </div>
+        ))}
       </div>
-
     </div>
   );
 }
-
-export default Community;

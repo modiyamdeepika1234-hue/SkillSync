@@ -1,283 +1,50 @@
-import React, { useMemo, useState } from "react";
-import "../styles/skillExchange.css";
-import Sidebar from "../components/Sidebar";
+import { useEffect, useMemo, useState } from 'react';
+import api from '../api/client';
+import UserCard from '../components/UserCard';
+import { useAuth } from '../context/AuthContext';
 
-const SkillExchange = () => {
+export default function SkillExchange() {
+  const { user } = useAuth();
+  const [users, setUsers]       = useState([]);
+  const [pending, setPending]   = useState([]);     // requests I sent (still pending)
+  const [query, setQuery]       = useState('');
 
-  const [users] = useState([
-    {
-      id: 1,
-      name: "Harsh Shinde",
-      bio: "Video Editor from Pune",
-      teachSkills: ["Video Editing", "Premiere Pro"],
-      learnSkills: ["Coding"],
-      match: 92,
-      online: true,
-      image:
-        "https://randomuser.me/api/portraits/men/32.jpg",
-    },
-
-    {
-      id: 2,
-      name: "Kunal Mali",
-      bio: "UI/UX Designer from Mumbai",
-      teachSkills: ["Design", "Figma"],
-      learnSkills: ["React"],
-      match: 88,
-      online: true,
-      image:
-        "https://randomuser.me/api/portraits/men/45.jpg",
-    },
-
-    {
-      id: 3,
-      name: "Varad Patil",
-      bio: "Frontend Developer from Delhi",
-      teachSkills: ["React", "JavaScript"],
-      learnSkills: ["UI Design"],
-      match: 81,
-      online: false,
-      image:
-        "https://randomuser.me/api/portraits/men/67.jpg",
-    },
-
-    {
-      id: 4,
-      name: "Sachin Mali",
-      bio: "Singer from Hyderabad",
-      teachSkills: ["Singing"],
-      learnSkills: ["Acting"],
-      match: 75,
-      online: true,
-      image:
-        "https://randomuser.me/api/portraits/men/12.jpg",
-    },
-  ]);
-
-  const [search, setSearch] = useState("");
-
-  const [showMatches, setShowMatches] =
-    useState(false);
-
-  const filteredUsers = useMemo(() => {
-
-    let filtered = [...users];
-
-    filtered = filtered.filter((user) => {
-
-      const text =
-        `${user.name}
-        ${user.bio}
-        ${user.teachSkills.join(" ")}
-        ${user.learnSkills.join(" ")}`.toLowerCase();
-
-      return text.includes(search.toLowerCase());
-
-    });
-
-    if (showMatches) {
-
-      filtered = filtered.filter(
-        (user) => user.match >= 85
-      );
-
-    }
-
-    return filtered;
-
-  }, [users, search, showMatches]);
-
-  const handleConnect = (name) => {
-
-    alert(`Connection request sent to ${name}`);
-
+  const load = async () => {
+    const [u, c] = await Promise.all([
+      api.get('/users'),
+      api.get('/connections'),                       // accepted
+    ]);
+    setUsers(u.data);
+    // Build pending-out list by checking outgoing requests:
+    const pendOut = await api.get('/connections/pending').then(()=>[]); // not used here
+    setPending(pendOut);
   };
+  useEffect(() => { load(); }, []);
+
+  const connectedIds = useMemo(() => new Set((user?.connections || []).map(String)), [user]);
+
+  const filtered = users.filter((u) => {
+    if (!query) return true;
+    const q = query.toLowerCase();
+    return u.name.toLowerCase().includes(q)
+      || (u.skillsOffered || []).some((s) => s.toLowerCase().includes(q));
+  });
 
   return (
-
-    <div className="exchange-layout">
-
-      <Sidebar />
-
-      <div className="exchange-page">
-
-        <div className="exchange-hero">
-
-          <div>
-
-            <h1>
-              Skill Exchange Network
-            </h1>
-
-            <p>
-              Connect with people who want
-              to share their skills and
-              learn from you.
-            </p>
-
-          </div>
-
-          <div className="hero-controls">
-
-            <input
-              type="text"
-              placeholder="Search skills or users..."
-              value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
-              className="search-input"
-            />
-
-            <button
-              className={`filter-btn ${
-                showMatches ? "active-btn" : ""
-              }`}
-              onClick={() =>
-                setShowMatches(!showMatches)
-              }
-            >
-              {
-                showMatches
-                  ? "Showing Top Matches"
-                  : "Show Matches"
-              }
-            </button>
-
-          </div>
-
-        </div>
-
-        <div className="users-grid">
-
-          {
-            filteredUsers.length === 0 ? (
-
-              <div className="empty-state">
-
-                <h2>No Users Found</h2>
-
-                <p>
-                  Try searching another skill.
-                </p>
-
-              </div>
-
-            ) : (
-
-              filteredUsers.map((user) => (
-
-                <div
-                  className="user-card"
-                  key={user.id}
-                >
-
-                  <div className="card-top">
-
-                    <div className="profile-wrapper">
-
-                      <img
-                        src={user.image}
-                        alt={user.name}
-                        className="profile-image"
-                      />
-
-                      <span
-                        className={`status-dot ${
-                          user.online
-                            ? "online"
-                            : "offline"
-                        }`}
-                      />
-
-                    </div>
-
-                    <div className="user-info">
-
-                      <h3>{user.name}</h3>
-
-                      <p>{user.bio}</p>
-
-                    </div>
-
-                  </div>
-
-                  <div className="match-badge">
-
-                    {user.match}% Match
-
-                  </div>
-
-                  <div className="skill-block">
-
-                    <h4>Can Teach</h4>
-
-                    <div className="tags-container">
-
-                      {
-                        user.teachSkills.map(
-                          (skill, index) => (
-                            <span
-                              className="skill-tag teach-tag"
-                              key={index}
-                            >
-                              {skill}
-                            </span>
-                          )
-                        )
-                      }
-
-                    </div>
-
-                  </div>
-
-                  <div className="skill-block">
-
-                    <h4>Wants To Learn</h4>
-
-                    <div className="tags-container">
-
-                      {
-                        user.learnSkills.map(
-                          (skill, index) => (
-                            <span
-                              className="skill-tag learn-tag"
-                              key={index}
-                            >
-                              {skill}
-                            </span>
-                          )
-                        )
-                      }
-
-                    </div>
-
-                  </div>
-
-                  <button
-                    className="connect-btn"
-                    onClick={() =>
-                      handleConnect(user.name)
-                    }
-                  >
-                    Connect
-                  </button>
-
-                </div>
-
-              ))
-
-            )
-          }
-
-        </div>
-
+    <div>
+      <h1 className="text-2xl font-bold">Skill Exchange</h1>
+      <p className="text-ink-500 mt-1">Discover learners and send connection requests.</p>
+      <input className="input mt-4 max-w-md" placeholder="Search by name or skill…"
+        value={query} onChange={(e)=>setQuery(e.target.value)}/>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+        {filtered.map((u) => (
+          <UserCard key={u._id} user={u}
+            isConnected={connectedIds.has(String(u._id))}
+            isPending={pending.some((p)=>String(p.receiver)===String(u._id))}
+            onChange={load}/>
+        ))}
+        {filtered.length === 0 && <p className="text-ink-500">No users match your search.</p>}
       </div>
-
     </div>
-
   );
-
-};
-
-export default SkillExchange;
+}

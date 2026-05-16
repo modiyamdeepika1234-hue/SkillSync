@@ -1,126 +1,56 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "../firebase";
-import API from "../api";
-import { FcGoogle } from "react-icons/fc";
-import "../styles/auth.css";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import { useAuth } from '../context/AuthContext';
+import Logo from '../components/Logo';
+import toast from 'react-hot-toast';
 
-const Login = () => {
-  const navigate = useNavigate();
+export default function Login() {
+  const { login, googleLogin } = useAuth();
+  const nav = useNavigate();
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [busy, setBusy] = useState(false);
 
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch(`${API}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // store only user data (not whole response mess)
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        alert("Login successful 🚀");
-        navigate("/dashboard");
-      } else {
-        alert(data.message || "Invalid Credentials");
-      }
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      provider.setCustomParameters({
-        prompt: "select_account",
-      });
-
-      const result = await signInWithPopup(auth, provider);
-
-      const userData = {
-        name: result.user.displayName,
-        email: result.user.email,
-        photo: result.user.photoURL,
-      };
-
-      localStorage.setItem("user", JSON.stringify(userData));
-
-      navigate("/dashboard");
-    } catch (error) {
-      console.log(error);
-      alert("Google Login Failed");
-    }
+  const submit = async (e) => {
+    e.preventDefault(); setBusy(true);
+    try { await login(form.email, form.password); nav('/dashboard'); }
+    catch (e) { toast.error(e.response?.data?.message || 'Login failed'); }
+    finally { setBusy(false); }
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h1>SkillSync</h1>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="card w-full max-w-md">
+        <div className="flex justify-center mb-4"><Logo /></div>
+        <h1 className="text-xl font-bold text-center">Welcome back</h1>
+        <p className="text-sm text-center text-ink-500">Sign in to continue your skill journey.</p>
 
-        <p className="subtitle">Welcome back</p>
-
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={loginData.email}
-            onChange={handleChange}
-            required
+        <div className="my-5 flex justify-center">
+          <GoogleLogin
+            onSuccess={async (cred) => {
+              try { await googleLogin(cred.credential); nav('/dashboard'); }
+              catch { toast.error('Google login failed'); }
+            }}
+            onError={() => toast.error('Google login failed')}
           />
+        </div>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={loginData.password}
-            onChange={handleChange}
-            required
-          />
+        <div className="flex items-center gap-3 my-4 text-xs text-ink-500">
+          <div className="h-px bg-slate-200 flex-1"/> OR <div className="h-px bg-slate-200 flex-1"/>
+        </div>
 
-          <button type="submit" className="main-btn">
-            Login
-          </button>
+        <form onSubmit={submit} className="space-y-3">
+          <input className="input" type="email" placeholder="Email" required
+            value={form.email} onChange={(e)=>setForm({...form,email:e.target.value})}/>
+          <input className="input" type="password" placeholder="Password" required
+            value={form.password} onChange={(e)=>setForm({...form,password:e.target.value})}/>
+          <button className="btn-primary w-full" disabled={busy}>{busy?'Signing in…':'Sign in'}</button>
         </form>
 
-        <div className="divider">OR</div>
-
-        <button
-          type="button"
-          className="google-btn"
-          onClick={handleGoogleLogin}
-        >
-          <FcGoogle size={22} />
-          Sign in with Google
-        </button>
-
-        <p className="bottom-text">
-          Don’t have an account? <Link to="/register">Register</Link>
+        <p className="mt-4 text-sm text-center text-ink-500">
+          New here? <Link to="/register" className="text-brand-700 font-medium">Create an account</Link>
         </p>
       </div>
     </div>
   );
-};
-
-export default Login;
+}

@@ -1,142 +1,58 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "../firebase";
-import API from "../api";
-import { FcGoogle } from "react-icons/fc";
-import "../styles/auth.css";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import { useAuth } from '../context/AuthContext';
+import Logo from '../components/Logo';
+import toast from 'react-hot-toast';
 
-const Register = () => {
-  const navigate = useNavigate();
+export default function Register() {
+  const { register, googleLogin } = useAuth();
+  const nav = useNavigate();
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [busy, setBusy] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    skillsHave: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch(`${API}/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Registration successful 🚀");
-        navigate("/login");
-      } else {
-        alert(data.message || "Registration failed");
-      }
-    } catch (error) {
-      console.log(error);
-      alert("Server error");
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      provider.setCustomParameters({
-        prompt: "select_account",
-      });
-
-      const result = await signInWithPopup(auth, provider);
-
-      const userData = {
-        name: result.user.displayName,
-        email: result.user.email,
-        photo: result.user.photoURL,
-      };
-
-      localStorage.setItem("user", JSON.stringify(userData));
-
-      navigate("/dashboard");
-    } catch (error) {
-      console.log(error);
-      alert("Google Signup Failed");
-    }
+  const submit = async (e) => {
+    e.preventDefault(); setBusy(true);
+    try { await register(form.name, form.email, form.password); nav('/dashboard'); }
+    catch (e) { toast.error(e.response?.data?.message || 'Sign up failed'); }
+    finally { setBusy(false); }
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h1>SkillSync</h1>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="card w-full max-w-md">
+        <div className="flex justify-center mb-4"><Logo /></div>
+        <h1 className="text-xl font-bold text-center">Create your account</h1>
 
-        <p className="subtitle">Create your account</p>
-
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={formData.name}
-            onChange={handleChange}
-            required
+        <div className="my-5 flex justify-center">
+          <GoogleLogin
+            onSuccess={async (cred) => {
+              try { await googleLogin(cred.credential); nav('/dashboard'); }
+              catch { toast.error('Google sign up failed'); }
+            }}
+            onError={() => toast.error('Google sign up failed')}
+            text="signup_with"
           />
+        </div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+        <div className="flex items-center gap-3 my-4 text-xs text-ink-500">
+          <div className="h-px bg-slate-200 flex-1"/> OR <div className="h-px bg-slate-200 flex-1"/>
+        </div>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-
-          <textarea
-            name="skillsHave"
-            placeholder="Your Skills"
-            value={formData.skillsHave}
-            onChange={handleChange}
-            required
-          />
-
-          <button type="submit" className="main-btn">
-            Register
-          </button>
+        <form onSubmit={submit} className="space-y-3">
+          <input className="input" placeholder="Full name" required
+            value={form.name} onChange={(e)=>setForm({...form,name:e.target.value})}/>
+          <input className="input" type="email" placeholder="Email" required
+            value={form.email} onChange={(e)=>setForm({...form,email:e.target.value})}/>
+          <input className="input" type="password" placeholder="Password (min 6 chars)" minLength={6} required
+            value={form.password} onChange={(e)=>setForm({...form,password:e.target.value})}/>
+          <button className="btn-primary w-full" disabled={busy}>{busy?'Creating…':'Create account'}</button>
         </form>
 
-        <div className="divider">OR</div>
-
-        <button
-          type="button"
-          className="google-btn"
-          onClick={handleGoogleLogin}
-        >
-          <FcGoogle size={22} />
-          Sign up with Google
-        </button>
-
-        <p className="bottom-text">
-          Already have an account? <Link to="/login">Login</Link>
+        <p className="mt-4 text-sm text-center text-ink-500">
+          Already have an account? <Link to="/login" className="text-brand-700 font-medium">Sign in</Link>
         </p>
       </div>
     </div>
   );
-};
-
-export default Register;
+}

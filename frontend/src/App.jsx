@@ -1,29 +1,37 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import Home from "./pages/Home";
-import SkillExchange from "./pages/SKillExchange";  
-import Profile from "./pages/Profile";  
-import Community from "./pages/Community";  
-import './App.css'; 
+import { Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
+import AppLayout from './components/AppLayout';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import SkillExchange from './pages/SkillExchange';
+import Community from './pages/Community';
+import LearningHub from './pages/LearningHub';
+import Notifications from './pages/Notifications';
+import Chat from './pages/Chat';
+import NotFound from './pages/NotFound';
 
-function App() {
-  
+const Page = ({ children }) => <ProtectedRoute><AppLayout>{children}</AppLayout></ProtectedRoute>;
+
+export default function App() {
   return (
-    <BrowserRouter>
-     
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/skill-exchange" element={<SkillExchange />} />
-            <Route path="/profile" element={<Profile />} /> 
-            <Route path="/community" element={<Community />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/"          element={<Landing />} />
+      <Route path="/login"     element={<Login />} />
+      <Route path="/register"  element={<Register />} />
+
+      <Route path="/dashboard"      element={<Page><Dashboard /></Page>} />
+      <Route path="/profile"        element={<Page><Profile /></Page>} />
+      <Route path="/skill-exchange" element={<Page><SkillExchange /></Page>} />
+      <Route path="/community"      element={<Page><Community /></Page>} />
+      <Route path="/learning-hub"   element={<Page><LearningHub /></Page>} />
+      <Route path="/notifications"  element={<Page><Notifications /></Page>} />
+      <Route path="/chat"           element={<Page><Chat /></Page>} />
+
+      <Route path="/home" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*"     element={<NotFound />} />
+    </Routes>
   );
 }
-
-export default App;
