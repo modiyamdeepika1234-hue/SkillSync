@@ -6,7 +6,11 @@ const app = require('./app');
 const connectDB = require('./config/db');
 const initSocket = require('./sockets');
 const PORT = process.env.PORT || 5000;
-
+app.get("/", (req, res) => {
+  res.json({
+    message: "Backend running",
+  });
+});
 (async () => {
   await connectDB();
   const server = http.createServer(app);
