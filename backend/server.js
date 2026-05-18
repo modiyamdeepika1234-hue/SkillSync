@@ -15,6 +15,3 @@ const PORT = process.env.PORT || 5000;
     console.log(`✅ SkillSync API running on http://localhost:${PORT}`)
   );
 })();
-app.get('/', (req, res) => {
-  res.send('SkillSync Backend Running');
-});
