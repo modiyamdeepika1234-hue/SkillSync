@@ -21,7 +21,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Welcome back, {user?.name?.split(' ')[0]} 👋</h1>
+      <h1 className="text-2xl font-bold">Welcome back, {user?.name?.split(' ')[0]} </h1>
       <p className="text-ink-500 mt-1">Here's a snapshot of your SkillSync activity.</p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
         {cards.map(({ label, val, icon: Icon, color }) => (
