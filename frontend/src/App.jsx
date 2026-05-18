@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import SkillExchange from './pages/SKillExchange';
 import Community from './pages/Community';
-import LearningHub from './pages/LearningHub';
+import LearningHub from './pages/Learninghub';
 import Notifications from './pages/Notifications';
 import Chat from './pages/Chat';
 import NotFound from './pages/NotFound';
