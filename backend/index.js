@@ -42,15 +42,7 @@ app.post("/register", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-app.use('/api/auth', authRoutes);
 
-app.get('/', (req, res) => {
-  res.send('SkillSync Backend Running Successfully');
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 
 // LOGIN
 app.post("/login", async (req, res) => {
@@ -127,6 +119,8 @@ app.put("/update-profile", async (req, res) => {
 });
 
 // SERVER START
-app.listen(5000, () => {
-  console.log("Server running on 5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
 });
