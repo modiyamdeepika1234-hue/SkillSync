@@ -11,6 +11,8 @@ app.get("/", (req, res) => {
     message: "Backend running",
   });
 });
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
 (async () => {
   await connectDB();
   const server = http.createServer(app);
