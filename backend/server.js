@@ -5,7 +5,6 @@ const http = require('http');
 const app = require('./app');
 const connectDB = require('./config/db');
 const initSocket = require('./sockets');
-
 const PORT = process.env.PORT || 5000;
 
 (async () => {
@@ -16,3 +15,6 @@ const PORT = process.env.PORT || 5000;
     console.log(`✅ SkillSync API running on http://localhost:${PORT}`)
   );
 })();
+app.get('/', (req, res) => {
+  res.send('SkillSync Backend Running');
+});
