@@ -9,9 +9,7 @@ app.use(express.json());
 mongoose.connect("mongodb://modiyamdeepika:deepika1234@ac-qqqsn4k-shard-00-00.vpj6amn.mongodb.net:27017,ac-qqqsn4k-shard-00-01.vpj6amn.mongodb.net:27017,ac-qqqsn4k-shard-00-02.vpj6amn.mongodb.net:27017/?ssl=true&replicaSet=atlas-cct1q6-shard-0&authSource=admin&appName=Cluster0")
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
-app.get("/", (req, res) => {
-  res.json({ message: "Backend running" });
-});
+
 
 
 // REGISTER
