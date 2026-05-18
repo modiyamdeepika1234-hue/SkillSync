@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
-import SkillExchange from './pages/SkillExchange';
+import SkillExchange from './pages/SKillExchange';
 import Community from './pages/Community';
 import LearningHub from './pages/LearningHub';
 import Notifications from './pages/Notifications';
