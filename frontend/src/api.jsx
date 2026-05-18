@@ -1,3 +1,3 @@
-const API = "http://localhost:5000";
+const API = "https://skillsync-backend.onrender.com/api";
 
 export default API;
